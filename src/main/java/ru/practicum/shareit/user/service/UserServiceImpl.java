@@ -12,8 +12,8 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
-    private UserMapper mapper;
-    private UserStorage storage;
+    private final UserMapper mapper;
+    private final UserStorage storage;
 
     @Override
     public User create(UserDto userDto) {

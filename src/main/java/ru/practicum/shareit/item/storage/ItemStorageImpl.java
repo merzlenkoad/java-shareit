@@ -41,7 +41,7 @@ public class ItemStorageImpl implements ItemStorage {
             }
             return items.get(item.getId());
         } else {
-            throw new NotFoundException("Не верно указан владелец. id=", item.getOwnerId());
+            throw new NotFoundException("The owner is not specified correctly. id=", item.getOwnerId());
         }
 
     }
@@ -70,7 +70,7 @@ public class ItemStorageImpl implements ItemStorage {
     @Override
     public void idVerification(Long itemId) {
         if (!items.containsKey(itemId)) {
-            throw new NotFoundException("Предмет не найден.", itemId);
+            throw new NotFoundException("The item was not found. id=", itemId);
         }
     }
 }

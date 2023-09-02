@@ -14,19 +14,19 @@ import java.util.List;
 @Component
 @AllArgsConstructor
 public class ItemServiceImpl implements ItemService {
-    private ItemMapper mapper;
-    private ItemStorage itemStorage;
-    private UserStorage userStorage;
+    private final ItemMapper mapper;
+    private final ItemStorage itemStorage;
+    private final UserStorage userStorage;
 
     @Override
     public Item create(ItemDto itemDto, Long ownerId) {
-        userStorage.idVerification(ownerId);
+        userStorage.userIdIsExist(ownerId);
         return itemStorage.create(mapper.toItem(itemDto, ownerId));
     }
 
     @Override
     public Item update(ItemDto itemDto, Long itemId, Long ownerId) {
-        userStorage.idVerification(ownerId);
+        userStorage.userIdIsExist(ownerId);
         Item item = mapper.toItem(itemDto,ownerId);
         item.setId(itemId);
         return itemStorage.update(item);
@@ -39,7 +39,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<Item> getItemsByOwner(Long ownerId) {
-        userStorage.idVerification(ownerId);
+        userStorage.userIdIsExist(ownerId);
         return itemStorage.getItemsByOwner(ownerId);
     }
 

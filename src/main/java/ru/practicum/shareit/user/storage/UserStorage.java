@@ -15,7 +15,7 @@ public interface UserStorage {
 
     void deleteById(Long userId);
 
-    void idVerification(Long id);
+    void userIdIsExist(Long id);
 
     void emailVerification(User user);
 }

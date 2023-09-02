@@ -21,35 +21,35 @@ import java.util.List;
 @RequestMapping(path = "/users")
 @AllArgsConstructor
 public class UserController {
-    private UserService userService;
+    private final UserService userService;
 
     @PostMapping
     public User create(@RequestBody @Validated(CreateGroup.class) UserDto userDto) {
-        log.info("Получен POST-запрос: добавление пользователя.");
+        log.info("Received a POST request: adding a user.");
         return userService.create(userDto);
     }
 
     @PatchMapping("/{userId}")
     public User update(@RequestBody @Valid  UserDto userDto, @PathVariable Long userId) {
-        log.info("Получен PATCH-запрос: обновление пользователя.");
+        log.info("Received a PATCH request: user update.");
         return userService.update(userDto, userId);
     }
 
     @GetMapping("/{userId}")
     public User getById(@PathVariable Long userId) {
-        log.info("Получен GET-запрос: получение пользователя.");
+        log.info("A GET request was received: getting a user.");
         return userService.getById(userId);
     }
 
     @GetMapping
     public List<User> getAll() {
-        log.info("Получен GET-запрос: получение всех пользователей.");
+        log.info("A GET request was received: getting all users.");
         return userService.getAll();
     }
 
     @DeleteMapping("/{userId}")
     public void deleteById(@PathVariable Long userId) {
-        log.info("Получен DELETE-запрос: удаление пользователя.");
+        log.info("A DELETE request was received: deleting a user.");
         userService.deleteById(userId);
     }
 }

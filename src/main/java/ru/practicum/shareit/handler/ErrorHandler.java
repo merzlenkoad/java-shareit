@@ -15,21 +15,21 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotFoundException(final NotFoundException e) {
-        log.info("404 {}" + e.getMessage() + e.getId());
+        log.error("404 {}" + e.getMessage() + e.getId());
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleValidationException(final ValidationException e) {
-        log.info("409 {}" + e.getMessage());
+        log.error("409 {}" + e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleThrowable(final Throwable e) {
-        log.info("400 {}" + e.getMessage() + e);
+        log.error("400 {}" + e.getMessage() + e);
         return new ErrorResponse(e.getMessage());
     }
 }

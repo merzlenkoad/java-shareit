@@ -30,7 +30,7 @@ public class UserStorageImpl implements UserStorage {
 
     @Override
     public User update(User user) {
-        idVerification(user.getId());
+        userIdIsExist(user.getId());
 
         if (user.getName() != null && user.getEmail() != null) {
             emailVerification(user);
@@ -50,7 +50,7 @@ public class UserStorageImpl implements UserStorage {
 
     @Override
     public User getById(Long userId) {
-        idVerification(userId);
+        userIdIsExist(userId);
         return users.get(userId);
     }
 
@@ -61,21 +61,21 @@ public class UserStorageImpl implements UserStorage {
 
     @Override
     public void deleteById(Long userId) {
-        idVerification(userId);
+        userIdIsExist(userId);
         users.remove(userId);
     }
 
     @Override
-    public void idVerification(Long id) {
+    public void userIdIsExist(Long id) {
         if (!users.containsKey(id)) {
-            throw new NotFoundException("Пользователь не найден. id=", id);
+            throw new NotFoundException("User not found. id=", id);
         }
     }
 
     @Override
     public void emailVerification(User user) {
         if (users.values().stream().anyMatch(u -> u.getEmail().equals(user.getEmail()))) {
-            throw new ValidationException("Пользователь с таким email уже существует.");
+            throw new ValidationException("A user with this email already exists.");
         }
     }
 
