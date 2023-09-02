@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
-import ru.practicum.shareit.util.Constants;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -24,14 +23,14 @@ public class ItemController {
 
     @PostMapping
     public Item create(@Valid @RequestBody ItemDto itemDto,
-                       @RequestHeader(Constants.X_SHARER_USER_ID) Long ownerId) {
+                       @RequestHeader("X-Sharer-User-Id") Long ownerId) {
         log.info("Received a POST request: adding an item.");
         return itemService.create(itemDto, ownerId);
     }
 
     @PatchMapping("/{itemId}")
     public Item update(@RequestBody ItemDto itemDto, @PathVariable Long itemId,
-                       @RequestHeader(Constants.X_SHARER_USER_ID) Long ownerId) {
+                       @RequestHeader("X-Sharer-User-Id") Long ownerId) {
         log.info("Received a PATCH request: updating the item with id={}", itemId);
         return itemService.update(itemDto, itemId, ownerId);
     }
@@ -43,7 +42,7 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<Item> getItemsByOwner(@RequestHeader(Constants.X_SHARER_USER_ID) Long ownerId) {
+    public List<Item> getItemsByOwner(@RequestHeader("X-Sharer-User-Id") Long ownerId) {
         log.info("A GET request was received: getting all the owner's items with id={}", ownerId);
         return itemService.getItemsByOwner(ownerId);
     }
