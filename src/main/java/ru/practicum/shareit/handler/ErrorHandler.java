@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.shareit.handler.exception.NotFoundException;
 import ru.practicum.shareit.handler.exception.ValidationException;
 
+import java.sql.SQLException;
+
 @Slf4j
 @RestControllerAdvice
 public class ErrorHandler {
@@ -20,9 +22,9 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleValidationException(final ValidationException e) {
-        log.error("409 {}" + e.getMessage());
+        log.error("400 {}" + e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
 
@@ -30,6 +32,20 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleThrowable(final Throwable e) {
         log.error("400 {}" + e.getMessage() + e);
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse sqlException(final SQLException e) {
+        log.error("409 {}" + e.getMessage());
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse runtimeException(final RuntimeException e) {
+        log.error("500 {}" + e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
 }

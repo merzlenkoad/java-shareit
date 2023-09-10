@@ -15,4 +15,6 @@ public interface UserService {
     List<User> getAll();
 
     void deleteById(Long userId);
+
+    User checkUserIsExists(Long userId);
 }
