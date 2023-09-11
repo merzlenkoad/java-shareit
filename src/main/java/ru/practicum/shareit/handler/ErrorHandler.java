@@ -5,7 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ru.practicum.shareit.handler.exception.BookingYourOwnThingException;
 import ru.practicum.shareit.handler.exception.NotFoundException;
+import ru.practicum.shareit.handler.exception.NotOwnerException;
 import ru.practicum.shareit.handler.exception.ValidationException;
 
 import java.sql.SQLException;
@@ -18,6 +20,20 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotFoundException(final NotFoundException e) {
         log.error("404 {}" + e.getMessage() + e.getId());
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse bookingYourOwnThingException(final BookingYourOwnThingException e) {
+        log.error("404 {}" + e.getMessage());
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse notOwnerException(final NotOwnerException e) {
+        log.error("404 {}" + e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
 

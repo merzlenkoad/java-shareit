@@ -21,5 +21,5 @@ public interface ItemService {
 
     Comment addComment(Long userId, Long itemId, CommentDto commentDto);
 
-    Item checkItemIsExists(Long itemId);
+    Item getItemIfExists(Long itemId);
 }

@@ -7,13 +7,16 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repository.BookingRepository;
-import ru.practicum.shareit.booking.util.BookingStatus;
+import ru.practicum.shareit.handler.exception.BookingYourOwnThingException;
+import ru.practicum.shareit.handler.exception.NotOwnerException;
+import ru.practicum.shareit.util.BookingStatus;
 import ru.practicum.shareit.handler.exception.NotFoundException;
 import ru.practicum.shareit.handler.exception.ValidationException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
+import ru.practicum.shareit.util.DateUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,14 +30,15 @@ public class BookingServiceImpl implements BookingService {
     private final ItemService itemService;
     private final UserService userService;
     private final BookingMapper mapper;
+    private final DateUtils dateUtils;
 
     @Override
     @Transactional
     public BookingDto create(BookingDto bookingDto, Long userId) {
-        Item item = itemService.checkItemIsExists(bookingDto.getItemId());
-        User booker = userService.checkUserIsExists(userId);
+        Item item = itemService.getItemIfExists(bookingDto.getItemId());
+        User booker = userService.getUserIfExists(userId);
         if (item.getOwnerId().equals(userId)) {
-            throw new NotFoundException("It is impossible to book your own thing.", userId);
+            throw new BookingYourOwnThingException("It is impossible to book your own thing.");
         }
         if (Optional.ofNullable(bookingDto.getStart()).isEmpty() ||
                 Optional.ofNullable(bookingDto.getEnd()).isEmpty() ||
@@ -56,10 +60,10 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public BookingDto update(Long bookingId, Long userId, Boolean approved) {
-        userService.checkUserIsExists(userId);
-        Booking booking = checkBookingIsExists(bookingId);
+        userService.getUserIfExists(userId);
+        Booking booking = getBookingIfExists(bookingId);
         if (!booking.getItem().getOwnerId().equals(userId)) {
-            throw new NotFoundException("Only the owner can confirm the booking.", userId);
+            throw new NotOwnerException("Only the owner can confirm the booking.");
         }
         if (booking.getStatus().equals(BookingStatus.APPROVED)) {
             throw new ValidationException("The approved status has already been set.");
@@ -70,20 +74,19 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDto getById(Long bookingId, Long userId) {
-        userService.checkUserIsExists(userId);
-        Booking booking = checkBookingIsExists(bookingId);
+        userService.getUserIfExists(userId);
+        Booking booking = getBookingIfExists(bookingId);
         if (booking.getBooker().getId().equals(userId) ||
                 booking.getItem().getOwnerId().equals(userId)) {
             return mapper.toBookingDto(booking);
         } else {
-            throw new NotFoundException("The requester is not the owner of the item or the booking",userId);
+            throw new NotOwnerException("The requester is not the owner of the item or the booking");
         }
     }
 
     @Override
     public List<BookingDto> getBookingsForUser(String state, Long userId) {
-        userService.checkUserIsExists(userId);
-        LocalDateTime time = LocalDateTime.now();
+        userService.getUserIfExists(userId);
         List<Booking> bookings;
         switch (state) {
             case "ALL":
@@ -92,13 +95,13 @@ public class BookingServiceImpl implements BookingService {
             case "CURRENT":
                 bookings = bookingRepository
                         .findByBookerIdAndStartIsBeforeAndEndIsAfterOrderByStartDesc(
-                                userId, time, time);
+                                userId, dateUtils.now(), dateUtils.now());
                 break;
             case "PAST":
-                bookings = bookingRepository.findByBookerIdAndEndIsBeforeOrderByStartDesc(userId, time);
+                bookings = bookingRepository.findByBookerIdAndEndIsBeforeOrderByStartDesc(userId, dateUtils.now());
                 break;
             case "FUTURE":
-                bookings = bookingRepository.findByBookerIdAndStartIsAfterOrderByStartDesc(userId, time);
+                bookings = bookingRepository.findByBookerIdAndStartIsAfterOrderByStartDesc(userId, dateUtils.now());
                 break;
             case "WAITING":
                 bookings = bookingRepository.findByBookerIdAndStatusOrderByStartDesc(userId, BookingStatus.WAITING);
@@ -114,8 +117,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingDto> getBookingsForOwner(String state, Long ownerId) {
-        userService.checkUserIsExists(ownerId);
-        LocalDateTime time = LocalDateTime.now();
+        userService.getUserIfExists(ownerId);
         List<Booking> bookings;
         switch (state) {
             case "ALL":
@@ -123,7 +125,7 @@ public class BookingServiceImpl implements BookingService {
                 break;
             case "FUTURE":
                 bookings = bookingRepository
-                        .findByItemOwnerIdAndStartIsAfterOrderByStartDesc(ownerId, time);
+                        .findByItemOwnerIdAndStartIsAfterOrderByStartDesc(ownerId, dateUtils.now());
                 break;
             case "WAITING":
                 bookings = bookingRepository
@@ -135,10 +137,11 @@ public class BookingServiceImpl implements BookingService {
                 break;
             case "CURRENT":
                 bookings = bookingRepository
-                        .findByItemOwnerIdAndStartBeforeAndEndAfterOrderByStartDesc(ownerId, time, time);
+                        .findByItemOwnerIdAndStartBeforeAndEndAfterOrderByStartDesc(
+                                ownerId, dateUtils.now(), dateUtils.now());
                 break;
             case "PAST":
-                bookings = bookingRepository.findByItemOwnerIdAndEndBeforeOrderByStartDesc(ownerId, time);
+                bookings = bookingRepository.findByItemOwnerIdAndEndBeforeOrderByStartDesc(ownerId, dateUtils.now());
                 break;
             default:
                 throw new ValidationException("Unknown state: UNSUPPORTED_STATUS");
@@ -147,7 +150,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Booking checkBookingIsExists(Long bookingId) {
+    public Booking getBookingIfExists(Long bookingId) {
         return bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException("Booking not found. Id = ", bookingId));
     }

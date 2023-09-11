@@ -3,7 +3,7 @@ package ru.practicum.shareit.booking.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.shareit.booking.util.BookingStatus;
+import ru.practicum.shareit.util.BookingStatus;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
@@ -35,6 +35,7 @@ public class Booking {
     @JoinColumn(name = "booker_id", referencedColumnName = "id")
     private User booker;
 
-
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
     private BookingStatus status;
 }

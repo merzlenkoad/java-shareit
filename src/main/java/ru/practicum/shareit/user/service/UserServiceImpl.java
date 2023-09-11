@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public User update(UserDto userDto, Long userId) {
-        User user = checkUserIsExists(userId);
+        User user = getUserIfExists(userId);
         if (!Strings.isBlank(userDto.getName())) {
             user.setName(userDto.getName());
         }
@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getById(Long userId) {
-        return checkUserIsExists(userId);
+        return getUserIfExists(userId);
     }
 
     @Override
@@ -49,12 +49,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteById(Long userId) {
-        checkUserIsExists(userId);
+        getUserIfExists(userId);
         userRepository.deleteById(userId);
     }
 
     @Override
-    public User checkUserIsExists(Long userId) {
+    public User getUserIfExists(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found. id = ", userId));
     }

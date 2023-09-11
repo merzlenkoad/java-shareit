@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.handler.exception.NotFoundException;
+import ru.practicum.shareit.handler.exception.NotOwnerException;
 import ru.practicum.shareit.handler.exception.ValidationException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -38,15 +39,15 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public ItemDto create(ItemDto itemDto, Long ownerId) {
-        userService.checkUserIsExists(ownerId);
+        userService.getUserIfExists(ownerId);
         return mapper.toItemDto(itemRepository.save(mapper.toItem(itemDto, ownerId)));
     }
 
     @Override
     @Transactional
     public ItemDto update(ItemDto itemDto, Long itemId, Long userId) {
-        userService.checkUserIsExists(userId);
-        Item item = checkItemIsExists(itemId);
+        userService.getUserIfExists(userId);
+        Item item = getItemIfExists(itemId);
         if (item.getOwnerId().equals(userId)) {
             if (!Strings.isBlank(itemDto.getName())) {
                 item.setName(itemDto.getName());
@@ -59,14 +60,14 @@ public class ItemServiceImpl implements ItemService {
             }
             return mapper.toItemDto(itemRepository.save(item));
         } else  {
-            throw new NotFoundException("It is impossible to edit someone else's thing. id = ", itemId);
+            throw new NotOwnerException("It is impossible to edit someone else's thing. id = ");
         }
     }
 
     @Override
     public ItemDtoWithBooking getById(Long itemId, Long userId) {
-        User user = userService.checkUserIsExists(userId);
-        Item item = checkItemIsExists(itemId);
+        User user = userService.getUserIfExists(userId);
+        Item item = getItemIfExists(itemId);
         List<Booking> bookings = bookingRepository.findByItemId(itemId);
         List<Comment> comments = commentRepository.findByItemId(itemId);
 
@@ -75,7 +76,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDtoWithBooking> getItemsByOwner(Long ownerId) {
-        User user = userService.checkUserIsExists(ownerId);
+        User user = userService.getUserIfExists(ownerId);
         List<Item> items = itemRepository.findAllByOwnerId(ownerId);
         List<Booking> bookings = bookingRepository.findByItemOwnerId(ownerId);
         List<Comment> comments = commentRepository.findByAuthorName(user.getName());
@@ -104,8 +105,8 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public Comment addComment(Long userId, Long itemId, CommentDto commentDto) {
-        User user = userService.checkUserIsExists(userId);
-        Item item = checkItemIsExists(itemId);
+        User user = userService.getUserIfExists(userId);
+        Item item = getItemIfExists(itemId);
         List<Booking> bookings = bookingRepository
                 .findByBookerIdAndItemIdAndEndBefore(userId, itemId, LocalDateTime.now());
         if (bookings.isEmpty()) {
@@ -116,7 +117,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item checkItemIsExists(Long itemId) {
+    public Item getItemIfExists(Long itemId) {
         return itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("Item not found. id = ", itemId));
     }
