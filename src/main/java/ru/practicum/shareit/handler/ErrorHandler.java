@@ -5,8 +5,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ru.practicum.shareit.handler.exception.BookingYourOwnThingException;
 import ru.practicum.shareit.handler.exception.NotFoundException;
+import ru.practicum.shareit.handler.exception.NotOwnerException;
 import ru.practicum.shareit.handler.exception.ValidationException;
+
+import java.sql.SQLException;
 
 @Slf4j
 @RestControllerAdvice
@@ -20,9 +24,23 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse bookingYourOwnThingException(final BookingYourOwnThingException e) {
+        log.error("404 {}" + e.getMessage());
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse notOwnerException(final NotOwnerException e) {
+        log.error("404 {}" + e.getMessage());
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleValidationException(final ValidationException e) {
-        log.error("409 {}" + e.getMessage());
+        log.error("400 {}" + e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
 
@@ -30,6 +48,20 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleThrowable(final Throwable e) {
         log.error("400 {}" + e.getMessage() + e);
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse sqlException(final SQLException e) {
+        log.error("409 {}" + e.getMessage());
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse runtimeException(final RuntimeException e) {
+        log.error("500 {}" + e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
 }

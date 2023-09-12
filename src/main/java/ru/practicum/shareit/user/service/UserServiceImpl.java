@@ -1,9 +1,12 @@
 package ru.practicum.shareit.user.service;
 
 import lombok.AllArgsConstructor;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.handler.exception.NotFoundException;
+import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.mapper.UserMapper;
-import ru.practicum.shareit.user.storage.UserStorage;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
@@ -13,32 +16,46 @@ import java.util.List;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserMapper mapper;
-    private final UserStorage storage;
+    private final UserRepository userRepository;
 
     @Override
+    @Transactional
     public User create(UserDto userDto) {
-        return storage.create(mapper.toUser(userDto));
+            return userRepository.save(mapper.toUser(userDto));
     }
 
     @Override
+    @Transactional
     public User update(UserDto userDto, Long userId) {
-        User user = mapper.toUser(userDto);
-        user.setId(userId);
-        return storage.update(user);
+        User user = getUserIfExists(userId);
+        if (!Strings.isBlank(userDto.getName())) {
+            user.setName(userDto.getName());
+        }
+        if (!Strings.isBlank(userDto.getEmail())) {
+            user.setEmail(userDto.getEmail());
+        }
+        return userRepository.save(user);
     }
 
     @Override
     public User getById(Long userId) {
-        return storage.getById(userId);
+        return getUserIfExists(userId);
     }
 
     @Override
     public List<User> getAll() {
-        return storage.getAll();
+        return userRepository.findAll();
     }
 
     @Override
     public void deleteById(Long userId) {
-        storage.deleteById(userId);
+        getUserIfExists(userId);
+        userRepository.deleteById(userId);
+    }
+
+    @Override
+    public User getUserIfExists(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User not found. id = ", userId));
     }
 }
