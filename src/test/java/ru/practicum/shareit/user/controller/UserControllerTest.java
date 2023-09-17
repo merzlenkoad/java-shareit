@@ -170,7 +170,8 @@ class UserControllerTest {
     public void handlerSQLExceptionTest() throws Exception {
         UserDto request = new UserDto("user", "user@user.com");
 
-        given(userService.create(any())).willAnswer( invocation -> { throw new SQLException(); });
+        given(userService.create(any())).willAnswer(invocation -> {
+            throw new SQLException(); });
 
         mockMvc.perform(post("/users")
                         .content(objectMapper.writeValueAsString(request))

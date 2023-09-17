@@ -101,20 +101,20 @@ class BookingServiceImplIntegrationTest {
 
         List<BookingDto> bookingDtoList2 = bookingService
                 .getBookingsForUser("FUTURE", 2L,0,1);
-        assertEquals(bookingDtoList ,bookingDtoList2);
+        assertEquals(bookingDtoList,bookingDtoList2);
 
         List<BookingDto> bookingDtoList3 = bookingService
                 .getBookingsForUser("REJECTED", 2L,0,1);
-        assertEquals(new ArrayList<>() ,bookingDtoList3);
+        assertEquals(new ArrayList<>(),bookingDtoList3);
         List<BookingDto> bookingDtoList4 = bookingService
                 .getBookingsForUser("CURRENT", 2L,0,1);
-        assertEquals(new ArrayList<>() ,bookingDtoList4);
+        assertEquals(new ArrayList<>(),bookingDtoList4);
         List<BookingDto> bookingDtoList5 = bookingService
                 .getBookingsForUser("PAST", 2L,0,1);
-        assertEquals(new ArrayList<>() ,bookingDtoList5);
+        assertEquals(new ArrayList<>(),bookingDtoList5);
         List<BookingDto> bookingDtoList6 = bookingService
                 .getBookingsForUser("WAITING", 2L,0,1);
-        assertEquals(bookingDtoList ,bookingDtoList6);
+        assertEquals(bookingDtoList,bookingDtoList6);
     }
 
     @Test
@@ -129,17 +129,17 @@ class BookingServiceImplIntegrationTest {
 
         List<BookingDto> bookingDtoList2 = bookingService
                 .getBookingsForOwner("FUTURE", 1L,0,1);
-        assertEquals(bookingDtoList ,bookingDtoList2);
+        assertEquals(bookingDtoList,bookingDtoList2);
 
         List<BookingDto> bookingDtoList3 = bookingService
                 .getBookingsForOwner("REJECTED", 1L,0,1);
-        assertEquals(new ArrayList<>() ,bookingDtoList3);
+        assertEquals(new ArrayList<>(),bookingDtoList3);
         List<BookingDto> bookingDtoList4 = bookingService
                 .getBookingsForOwner("CURRENT", 1L,0,1);
-        assertEquals(new ArrayList<>() ,bookingDtoList4);
+        assertEquals(new ArrayList<>(),bookingDtoList4);
         List<BookingDto> bookingDtoList5 = bookingService
                 .getBookingsForOwner("PAST", 1L,0,1);
-        assertEquals(new ArrayList<>() ,bookingDtoList5);
+        assertEquals(new ArrayList<>(),bookingDtoList5);
         List<BookingDto> bookingDtoList6 = bookingService
                 .getBookingsForOwner("WAITING", 1L,0,1);
         assertEquals(bookingDtoList,bookingDtoList6);

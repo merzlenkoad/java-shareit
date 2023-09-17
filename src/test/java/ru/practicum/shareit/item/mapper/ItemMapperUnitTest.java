@@ -1,6 +1,5 @@
 package ru.practicum.shareit.item.mapper;
 
-import org.h2.mvstore.DataUtils;
 import org.junit.jupiter.api.Test;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
@@ -12,8 +11,6 @@ import ru.practicum.shareit.util.BookingStatus;
 import ru.practicum.shareit.util.DateUtils;
 
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class ItemMapperUnitTest {

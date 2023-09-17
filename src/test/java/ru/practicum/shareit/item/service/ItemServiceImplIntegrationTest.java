@@ -159,8 +159,8 @@ class ItemServiceImplIntegrationTest {
         assertNotNull(createdItemDto.getId());
 
         Booking booking = new Booking(1L,LocalDateTime.now().minusDays(4),LocalDateTime.now().minusDays(3),
-                new Item(1L, "Дрель", "Простая дрель", true,1L, null)
-                ,user2,BookingStatus.APPROVED);
+                new Item(1L, "Дрель", "Простая дрель", true,1L, null),
+                user2,BookingStatus.APPROVED);
         bookingRepository.save(booking);
 
         commentDto = new CommentDto(2L,"some text",new Item(),"user", LocalDateTime.now());
