@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import ru.practicum.shareit.booking.dto.BookingDtoForItem;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.item.dto.ItemShortDto;
 import ru.practicum.shareit.util.BookingStatus;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoWithBooking;
@@ -25,7 +26,8 @@ public class ItemMapper {
                 itemDto.getName(),
                 itemDto.getDescription(),
                 itemDto.getAvailable(),
-                ownerId
+                ownerId,
+                itemDto.getRequestId()
         );
     }
 
@@ -34,7 +36,8 @@ public class ItemMapper {
                item.getId(),
                item.getName(),
                item.getDescription(),
-               item.getAvailable()
+               item.getAvailable(),
+               item.getRequestId()
        );
     }
 
@@ -68,6 +71,18 @@ public class ItemMapper {
                 .lastBooking(actualLastBooking)
                 .nextBooking(actualNextBooking)
                 .comments(comments)
+                .requestId(item.getRequestId())
+                .build();
+    }
+
+    public ItemShortDto toItemShortDto(Item item) {
+        return ItemShortDto
+                .builder()
+                .id(item.getId())
+                .name(item.getName())
+                .description(item.getDescription())
+                .available(item.getAvailable())
+                .requestId(item.getRequestId())
                 .build();
     }
 }

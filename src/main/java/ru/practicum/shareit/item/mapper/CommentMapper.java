@@ -10,17 +10,6 @@ import java.time.LocalDateTime;
 
 @Component
 public class CommentMapper {
-
-    public CommentDto toCommentDto(Comment comment, User author) {
-        return CommentDto
-                .builder()
-                .id(comment.getId())
-                .author(author.getName())
-                .created(comment.getCreated())
-                .text(comment.getText())
-                .build();
-    }
-
     public Comment toComment(CommentDto commentDto, User author, Item item) {
         return Comment
                 .builder()

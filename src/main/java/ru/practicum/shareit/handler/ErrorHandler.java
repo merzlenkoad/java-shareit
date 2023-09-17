@@ -45,13 +45,6 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleThrowable(final Throwable e) {
-        log.error("400 {}" + e.getMessage() + e);
-        return new ErrorResponse(e.getMessage());
-    }
-
-    @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse sqlException(final SQLException e) {
         log.error("409 {}" + e.getMessage());
