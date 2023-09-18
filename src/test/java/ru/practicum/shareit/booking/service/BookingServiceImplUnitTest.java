@@ -1,8 +1,8 @@
 package ru.practicum.shareit.booking.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.practicum.shareit.booking.dto.BookingDto;
@@ -31,7 +31,8 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class BookingServiceImplUnitTest {
 
-    private BookingService bookingService;
+    @InjectMocks
+    private BookingServiceImpl bookingService;
 
     @Mock
     private BookingRepository bookingRepository;
@@ -44,13 +45,7 @@ class BookingServiceImplUnitTest {
 
     @Mock
     private BookingMapper bookingMapper;
-    private DateUtils dateUtils = new DateUtils();
-
-    @BeforeEach
-    public void setUp() {
-        bookingService =
-                new BookingServiceImpl(bookingRepository, itemService, userService, bookingMapper, dateUtils);
-    }
+    private final DateUtils dateUtils = new DateUtils();
 
     @Test
     public void createWithOwnerIdEqualsUserId() {

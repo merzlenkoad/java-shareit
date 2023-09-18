@@ -1,13 +1,12 @@
 package ru.practicum.shareit.user.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.practicum.shareit.handler.exception.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
@@ -21,15 +20,11 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplUnitTest {
 
-    private UserService userService;
+    @InjectMocks
+    private UserServiceImpl userService;
 
     @Mock
     private UserRepository repository;
-
-    @BeforeEach
-    public void setUp() {
-        userService = new UserServiceImpl(new UserMapper(), repository);
-    }
 
     @Test
     void updateWithNameAndEmailIsNull() {
