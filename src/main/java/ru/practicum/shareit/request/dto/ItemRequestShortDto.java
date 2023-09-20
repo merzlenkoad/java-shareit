@@ -4,18 +4,19 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.shareit.item.dto.ItemShortDto;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import javax.validation.constraints.NotBlank;
+
+/**
+ * TODO Sprint add-item-requests.
+ */
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ItemRequestDto {
-    private Long id;
+public class ItemRequestShortDto {
+
+    @NotBlank
     private String description;
-    private LocalDateTime created;
-    private List<ItemShortDto> items;
 }

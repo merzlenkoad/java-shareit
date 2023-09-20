@@ -22,11 +22,6 @@ public class Item {
     @Column(name = "owner_id")
     private Long ownerId;
 
-
-    public Item(String name, String description, boolean available, Long ownerId) {
-        this.name = name;
-        this.description = description;
-        this.available = available;
-        this.ownerId = ownerId;
-    }
+    @Column(name = "request_id")
+    private Long requestId;
 }
