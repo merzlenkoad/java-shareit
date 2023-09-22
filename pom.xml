@@ -71,6 +71,11 @@
 					</executions>
 					<dependencies>
 						<dependency>
+							<groupId>org.postgresql</groupId>
+							<artifactId>postgresql</artifactId>
+							<scope>runtime</scope>
+						</dependency>
+						<dependency>
 							<groupId>com.puppycrawl.tools</groupId>
 							<artifactId>checkstyle</artifactId>
 							<version>10.3</version>
