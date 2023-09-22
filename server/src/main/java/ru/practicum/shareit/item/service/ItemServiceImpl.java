@@ -23,7 +23,9 @@ import ru.practicum.shareit.user.service.UserService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
@@ -80,9 +82,10 @@ public class ItemServiceImpl implements ItemService {
         List<Item> items = itemRepository.findAllByOwnerId(ownerId);
         List<Booking> bookings = bookingRepository.findByItemOwnerId(ownerId);
         List<Comment> comments = commentRepository.findByAuthorName(user.getName());
-
+        List<Item> sortedItems = items.stream().sorted(Comparator.comparing(Item::getId)).collect(Collectors.toList());
         List<ItemDtoWithBooking> itemsDtoWithBooking = new ArrayList<>();
-        for (Item item: items) {
+
+        for (Item item: sortedItems) {
             itemsDtoWithBooking.add(mapper.toItemDtoWithBooking(item, bookings, ownerId, comments));
         }
         return itemsDtoWithBooking;
