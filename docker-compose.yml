@@ -28,7 +28,7 @@ services:
       - DB_PORT=5432
 
   db:
-    image: postgres:14-apline
+    image: postgres:latest
     container_name: db-container
     ports:
       - "6541:5432"
